@@ -223,7 +223,7 @@ void ToolChain::Remote(int portnum){
   while(running){
     
     if(*m_newmessage){
-      
+      std::cout<<"received message \""<<m_message<<"\""<<std::endl;      
       if(!strcmp(m_message,"Initialise")) Initialise();
       else if (!strcmp(m_message,"Execute")) Execute();
       else if (!strcmp(m_message,"Finalise")) Finalise();
