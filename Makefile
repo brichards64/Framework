@@ -1,12 +1,12 @@
 
-DataModelInclude =
+DataModelInclude = -L/usr/lib64/root -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread -m64 -I/usr/include/root -I include -L /lib -lStore
 DataModelLib =
-MyToolsInclude =
+MyToolsInclude = ../obj/PSEC4_EVAL.o  ../obj/stdUSBl.o  ../obj/ScopePipe.o -I ../include/ -L/usr/lib64/root -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread -m64 -I/usr/include/root -lusb -I ../include
 MyToolsLib =
 
 all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so
 
-	g++ src/main.cpp -o main -I include -L lib -lMyTools -lToolChain -lStore -lDataModel -lSocketCom -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
+	g++ src/main.cpp -o main -I include -L lib -lMyTools -lToolChain -lDataModel -lSocketCom -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
 
 lib/libStore.so:
 
@@ -32,10 +32,9 @@ lib/libToolChain.so: lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libD
 
 clean: 
 
-	rm main
-	rm lib/*.so
 	rm include/*.h
-
+	rm lib/*.so
+	rm main
 
 lib/libDataModel.so: lib/libStore.so
 
