@@ -6,7 +6,7 @@ MyToolsLib =
 
 all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so
 
-	g++ src/main.cpp -o main -I include -L lib -lMyTools -lToolChain -lStore -lDataModel -lSocketCom -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
+	g++ src/main.cpp -o main -I include -L lib -lMyTools -lToolChain -lDataModel -lSocketCom -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
 
 lib/libStore.so:
 
