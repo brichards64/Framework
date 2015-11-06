@@ -1,8 +1,8 @@
 # DAQFramework
 
-----------------------------------------
-Consept
------------------------------------------
+****************************
+#Consept
+****************************
 
 The main executable creates a ToolChain which is an object that holds Tools. Tools are added to the ToolChain and then the ToolChain can be told to Initialise Execute and Finalise each tool in the chain.
 
@@ -13,7 +13,7 @@ User Tools can be generated for use in the tool chain by incuding a Tool header.
 For more information consult the README files in the relavent directories
 
 ****************************
-Building
+#Building
 ****************************
 
 make clean
@@ -21,7 +21,7 @@ make
 
 
 ****************************
-Usage 
+#Usage 
 ****************************
 
 ./main
@@ -29,7 +29,7 @@ Usage
 note all configuration variables are passed through config files to the Tools
 
 ****************************
-Customising
+#Customising
 ****************************
 
 To adapt for your own uses you need to:
