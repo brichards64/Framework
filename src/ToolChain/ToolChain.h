@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
@@ -10,7 +11,8 @@
 
 #include "Tool.h"
 #include "DataModel.h"
-#include "SocketCom.h"
+//#include "SocketCom.h"
+#include "zmq.hpp"
 
 class ToolChain{
 
@@ -27,30 +29,24 @@ class ToolChain{
 
   void Interactive();
   void Remote(int portnum);
-  
-  std::string m_command;
-  pthread_mutex_t mu_tcommand;
-  bool m_newcommand;
-  pthread_mutex_t mu_tnewcommand;
-  bool m_listen;
-  pthread_mutex_t mu_tlisten;
-  
-  
+
+   
 private:
 
-  static  void *InteractiveThread(void* arg);
+  void ExecuteCommand(std::string connand);
+static  void *InteractiveThread(void* arg);
   
+
   bool m_verbose;
   int m_errorlevel;
   std::vector<Tool*> m_tools;
   std::vector<std::string> m_toolnames;
   std::vector<std::string> m_configfiles;
   DataModel m_data;
-
-  char* m_message;
-  bool* m_newmessage;
   
-  pthread_t threads[5];
+  pthread_t thread;
+  bool exeloop;
+  zmq::context_t *context;
   
 };
 

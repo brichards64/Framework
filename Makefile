@@ -4,9 +4,9 @@ DataModelLib =
 MyToolsInclude =
 MyToolsLib =
 
-all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so
+all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h  lib/libDataModel.so
 
-	g++ src/main.cpp -o main -I include -L lib -lMyTools -lToolChain -lDataModel -lSocketCom -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
+	g++ src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib) -L /usr/lib64 -lzmq
 
 lib/libStore.so:
 
@@ -18,24 +18,18 @@ include/Tool.h:
 
 	cp src/Tool/Tool.h include/
 
-lib/libSocketCom.so:
 
-	cp src/SocketCom/SocketCom.h include/
-	g++ -c --shared src/SocketCom/SocketCom.cpp -I inlcude -lpthread -o lib/libSocketCom.so
-
-
-lib/libToolChain.so: lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so
+lib/libToolChain.so: lib/libStore.so include/Tool.h lib/libDataModel.so
 
 	cp src/ToolChain/ToolChain.h include/
-	g++ -c --shared src/ToolChain/ToolChain.cpp -I include -lpthread -L /lib -lStore -lSocketCom -lDataModel -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib)
+	cp src/NodeDeamon/cppzmq/zmq.hpp include/
+	g++ -c --shared src/ToolChain/ToolChain.cpp -I include -lpthread -L /lib -lStore -lDataModel -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) -L /usr/lib64 -lzmq
 
 
 clean: 
-
-	rm main
-	rm lib/*.so
 	rm include/*.h
-
+	rm lib/*.so
+	rm main
 
 lib/libDataModel.so: lib/libStore.so
 

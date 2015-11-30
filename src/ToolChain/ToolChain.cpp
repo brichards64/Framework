@@ -2,6 +2,7 @@
 
 ToolChain::ToolChain(bool verbose,int errorlevel){
 
+  context=new zmq::context_t(1);
   m_verbose=verbose;
   m_errorlevel=errorlevel;
   
@@ -10,6 +11,11 @@ ToolChain::ToolChain(bool verbose,int errorlevel){
     std::cout<<"**** Tool chain created ****"<<std::endl;
     std::cout<<"********************************************************"<<std::endl<<std::endl;
   }
+
+  execounter=0;
+  Inialised=false;
+  Finalised=false;
+
 }
 
 
@@ -59,6 +65,11 @@ void ToolChain::Initialise(){
   if(m_verbose){std::cout<<"**** Tool chain initilised ****"<<std::endl;
     std::cout<<"********************************************************"<<std::endl<<std::endl;
   }
+
+  execounter=0;
+  Inialised=true;
+  Finalised=false;
+
 }
 
 
@@ -99,6 +110,8 @@ void ToolChain::Execute(int repeates){
     }
   }
 
+  execounter++;
+
 }
 
 
@@ -136,123 +149,128 @@ void ToolChain::Finalise(){
     std::cout<<"**** Tool chain Finalised ****"<<std::endl;
     std::cout<<"********************************************************"<<std::endl<<std::endl;
   }
+
+  execounter=0;
+  Inialised=false;
+  Finalised=true;
 }
 
 
 void ToolChain::Interactive(){
-  m_verbose=false;
-  m_listen=true;
-  m_newcommand=false;
-  pthread_mutex_init(&mu_tnewcommand, NULL);
-  pthread_mutex_init(&mu_tlisten, NULL);
-  pthread_mutex_init(&mu_tcommand, NULL);
-  pthread_create(&threads[0], NULL, ToolChain::InteractiveThread, this);
-  bool exeloop=false;
+  m_verbose=false;  
+  exeloop=false;
   
-  while(true){
-    pthread_mutex_lock(&mu_tnewcommand); 
-    if(m_newcommand){
-      pthread_mutex_lock (&mu_tcommand);    
-      if(m_command=="Initialise") Initialise();
-      else if (m_command=="Execute") Execute();
-      else if (m_command=="Finalise") Finalise();
-      else if (m_command=="Quit"){	
-	pthread_mutex_lock (&mu_tlisten);  
-	m_listen=false;
-	pthread_mutex_unlock (&mu_tlisten);  
-	exit(0);
-      }
-      else if (m_command=="Start"){
-	Initialise();
-	exeloop=true;
-      }
-      else if(m_command=="Pause") exeloop=false;
-      else if(m_command=="Unpause") exeloop=true;
-      else if(m_command=="Stop") {
-	exeloop=false;
-	Finalise();
-      }
-      else std::cout<<"command not recognised please try again"<<std::endl;
+  zmq::socket_t Ireceiver (*context, ZMQ_PAIR);
+  Ireceiver.bind("inproc://control");
+  
+  pthread_create (&thread, NULL, ToolChain::InteractiveThread, context);
+  
+  while (true){
+
+    zmq::message_t message;
+    std::string command="";
+    if(Ireceiver.recv (&message, ZMQ_NOBLOCK)){
       
-      m_newcommand=false;
-      pthread_mutex_unlock (&mu_tcommand); 
+      std::istringstream iss(static_cast<char*>(message.data()));
+      iss >> command;
+
+      std::cout<<"Please type command : Start, Pause, Unpause, Stop, Quit (Initialise, Execute, Finalise)"<<std::endl;
+      std::cout<<">";
+      
     }
-    pthread_mutex_unlock (&mu_tnewcommand); 
     
-    if(exeloop) Execute();
+    ExecuteCommand(command);
+  }  
+  
+  
+}  
+
+
+
+void ToolChain::ExecuteCommand(std::string command){
+  
+  if(command=="Initialise") Initialise();
+  else if (command=="Execute") Execute();
+  else if (command=="Finalise") Finalise();
+  else if (command=="Quit")exit(0);
+  else if (command=="Start"){
+    Initialise();
+    exeloop=true;
   }
+  else if(command=="Pause") exeloop=false;
+  else if(command=="Unpause") exeloop=true;
+  else if(command=="Stop") {
+    exeloop=false;
+    Finalise();
+  }
+  else if(command!="")std::cout<<"command not recognised please try again"<<std::endl;
+ 
+  if(exeloop) Execute();
   
 }
 
-void *ToolChain::InteractiveThread(void* arg){
-  ToolChain* self=(ToolChain*)arg;
-  
-  pthread_mutex_lock (&self->mu_tlisten);  
-  while(self->m_listen){
-    pthread_mutex_unlock (&self->mu_tlisten);
-    pthread_mutex_lock (&self->mu_tnewcommand);
-    if(!self->m_newcommand){
-    pthread_mutex_unlock (&self->mu_tnewcommand);  
-      std::cout<<"Please type command : Start, Pause, Unpause, Stop, Quit (Initialise, Execute, Finalise)"<<std::endl;   
-      
-      pthread_mutex_lock (&self->mu_tcommand); 
-      std::cin>>self->m_command;
-      pthread_mutex_unlock (&self->mu_tcommand); 
-      
-      pthread_mutex_lock (&self->mu_tnewcommand); 
-      self->m_newcommand=true;
-       
-    }
-    pthread_mutex_unlock (&self->mu_tnewcommand); 
-  }
-  pthread_mutex_unlock (&self->mu_tlisten);  
-}
+
+
 
 void ToolChain::Remote(int portnum){
   
-  m_newmessage= new bool;
-  *m_newmessage=false;
-  m_message=new char[256];
-  bool running=true;
-  bool exeloop=false;
-  
-  SocketCom server(false,"",portnum,m_message,m_newmessage);
-  
-  server.ListenStart();
-  
-  while(running){
-    
-    if(*m_newmessage){
-      
-      if(!strcmp(m_message,"Initialise")) Initialise();
-      else if (!strcmp(m_message,"Execute")) Execute();
-      else if (!strcmp(m_message,"Finalise")) Finalise();
-      else if (!strcmp(m_message,"Quit")){
-	exeloop=false;
-	running=false;
-      }
-      else if (!strcmp(m_message,"Start")){
-        Initialise();
-        exeloop=true;
-      }
-      else if(!strcmp(m_message,"Pause")) exeloop=false;
-      else if(!strcmp(m_message,"Unpause")) exeloop=true;
-      else if(!strcmp(m_message,"Stop")) {
-        exeloop=false;
-        Finalise();
-      }
-      memset(m_message,0,sizeof(m_message));
-         
-      *m_newmessage=false;
-    }
-  
-    if(exeloop) {
-      Execute();
-    }    
+  m_verbose=false;
+  exeloop=false;
 
-  }
+  std::stringstream tcp;
+  tcp<<"tcp://*:"<<portnum;
+
+  zmq::socket_t Ireceiver (*context, ZMQ_REP);
+  Ireceiver.bind(tcp.str().c_str());
   
-  server.ListenStop();
+  while (true){
+    zmq::message_t message;
+    std::string command="";
+    if(Ireceiver.recv(&message, ZMQ_NOBLOCK)){
+      
+      std::istringstream iss(static_cast<char*>(message.data()));
+      iss >> command;
+
+      zmq::message_t send(256);
+      std::string tmp="got your message";
+      snprintf ((char *) send.data(), 256 , "%s" ,tmp.c_str()) ;
+      Ireceiver.send(send);
+      
+    }
+    
+    ExecuteCommand(command);
+  }  
   
   
 }
+
+
+
+void* ToolChain::InteractiveThread(void* arg){
+
+  zmq::context_t * context = static_cast<zmq::context_t*>(arg);
+
+  zmq::socket_t Isend (*context, ZMQ_PAIR);
+  Isend.connect("inproc://control");
+
+  bool running=true;
+
+  std::cout<<"Please type command : Start, Pause, Unpause, Stop, Quit (Initialise, Execute, Finalise)"<<std::endl;
+  std::cout<<">";
+
+  
+  while (running){
+
+    std::string tmp;
+    std::cin>>tmp;
+    zmq::message_t message(256);
+    snprintf ((char *) message.data(), 256 , "%s" ,tmp.c_str()) ;
+    Isend.send(message);
+
+    if (tmp=="Quit")running=false;
+  }
+
+  return (NULL);
+
+}
+

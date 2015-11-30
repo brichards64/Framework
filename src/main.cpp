@@ -9,6 +9,7 @@ int main(){
 
   tools.Add("DummyTool",&dummytool,"configfiles/DummyToolConfig");
 
+  //int portnum=24000;
   //tools.Remote(portnum);
   //tools.Interactive();
   
