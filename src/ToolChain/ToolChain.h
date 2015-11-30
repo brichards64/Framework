@@ -45,8 +45,13 @@ static  void *InteractiveThread(void* arg);
   DataModel m_data;
   
   pthread_t thread;
-  bool exeloop;
   zmq::context_t *context;
+
+ bool exeloop;
+ int execouter;
+ bool Initialised;
+ bool Finalised;
+
   
 };
 
