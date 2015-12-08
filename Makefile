@@ -53,5 +53,5 @@ lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so CUDA/daq_c
 	cp UserTools/*.h include/
 	g++  --shared -c UserTools/Unity.cpp CUDA/daq_code.o -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
 
-CUDA/daq_code: CUDA/daq_code.cu Makefile
-	nvcc -c CUDA/daq_code.cu -o CUDA/daq_code.o $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
+CUDA/daq_code: UserTools/CUDA/daq_code.cu Makefile
+	nvcc -c UserTools/CUDA/daq_code.cu -o UserTools/CUDA/daq_code.o $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
