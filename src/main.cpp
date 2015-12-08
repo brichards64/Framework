@@ -12,7 +12,7 @@ int main(){
   TriggerOutput output;
   
   tools.Add("WCSim ASCI Reader",&reader,"configfiles/WCSimASCIReaderConfig");
-  tools.Add("GPU Processor",&processor);
+  tools.Add("GPU Processor",&processor,"configfiles/GPUProcessorConfig");
   tools.Add("Trigger Output",&output,"configfiles/TriggerOutputConfig");
  
   //tools.Remote(portnum);

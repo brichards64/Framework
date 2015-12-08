@@ -1206,9 +1206,7 @@ float read_value_from_file(std::string paramname, std::string filename){
 
 }
 
-void read_user_parameters(){
-
-  std::string parameter_file = "parameters.txt";
+void read_user_parameters(std::string parameter_file){
 
   speed_light_water = 29.9792/1.3330; // speed of light in water, cm/ns
   //double speed_light_water = 22.490023;
@@ -1228,7 +1226,7 @@ void read_user_parameters(){
 }
 
 
-int gpu_daq_initialize(){
+int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::string parameter_file){
 
   int argc;
   const char **argv;
@@ -1282,7 +1280,7 @@ int gpu_daq_initialize(){
   ///////////////////////
   if( use_timing )
     start_c_clock();
-  read_user_parameters();
+  read_user_parameters(parameter_file);
   if( use_verbose ){
     printf(" --- user parameters \n");
     printf(" distance between test vertices = %f cm \n", distance_between_vertices);

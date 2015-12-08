@@ -16,7 +16,7 @@ For more information consult the README files in the relavent directories
 #Building
 ****************************
 
-make clean
+make clean;
 make
 
 

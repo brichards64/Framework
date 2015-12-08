@@ -5,7 +5,7 @@
 
 int CUDAFunction(std::vector<int> PMTids, std::vector<int> times);
 
-int gpu_daq_initialize();
+int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::string parameter_file);
 int gpu_daq_finalize();
 
 bool read_input(std::vector<int> PMTids, std::vector<int> times, int * max_time);
@@ -49,7 +49,7 @@ void free_global_memories();
 void copy_candidates_from_device_to_host();
 void choose_candidates_above_threshold();
 float read_value_from_file(std::string paramname, std::string filename);
-void read_user_parameters();
+void read_user_parameters(std::string parameter_file);
 
 
 #endif

@@ -15,7 +15,33 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
   m_data->triggeroutput=false;
 
 
-  gpu_daq_initialize();
+
+  
+  std::string PMTFile;
+  std::string DetectorFile;
+  std::string ParamiterFile;
+  
+  m_variables.Get("PMTFile",PMTFile);
+  m_variables.Get("DetectorFile",DetectorFile);
+  m_variables.Get("ParameterFile",ParameterFile);
+  
+  gpu_daq_initialize(PMTFile,DetectorFile,ParamiterFile);
+
+
+  // can acess variables directly like this and would be good if you could impliment in your code
+
+  float dark_rate;
+  m_variables.Get("dark_rate",dark_rate);
+
+  //to do this in your code instead of passing the three strings you could just do
+
+  //gpu_daq_initialize(m_variables);
+
+  // then in your code you can include 
+  //#include "Store.h"
+  //  gpu_daq_initialize(Store variables);
+
+  //and pull them out with the get function in the same way 
 
   return true;
 }
