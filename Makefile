@@ -39,7 +39,7 @@ clean:
 	rm include/*.h
 	rm lib/*.so
 	rm main
-	rm -f CUDA/daq_code
+	rm -f UserTools/CUDA/daq_code
 
 
 lib/libDataModel.so: lib/libStore.so
