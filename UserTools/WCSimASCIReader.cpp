@@ -20,20 +20,25 @@ bool WCSimASCIReader::Execute(){
   m_variables.Get("inputfile",inputfile);
   std::string line;
   std::ifstream data (inputfile.c_str());
-  if (data.is_open())
-    {
-      while ( getline (data,line) )
-	{
-	  int PMTid=0;
-	  int time=0;
-	  std::stringstream tmp(line);
-	  tmp >> PMTid>>time;
+  if (data.is_open()){
+    std::vector<int>PMTid;
+    std::vector<int>time;
+    while ( getline (data,line) )
+      {
+	int tmpPMTid=0;
+	int tmptime=0;
+	std::stringstream tmp(line);
+	tmp >> tmpPMTid>>tmptime;
+	PMTid.push_back(tmpPMTid);
+	time.push_back(tmptime);
+	
+      }
 
-	  SubSample tmpsb(PMTid,time);
-	  m_data->Samples.push_back(tmpsb);
-	}
-      data.close();
-    }
+    SubSample tmpsb(PMTid,time);
+    for(int i=0;i<100;i++)m_data->Samples.push_back(tmpsb);
+    
+    data.close();
+  }
   
   else {
     std::cout << "Unable to open file"; 

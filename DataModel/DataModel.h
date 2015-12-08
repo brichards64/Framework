@@ -14,13 +14,13 @@ class SubSample{
  public:
   
   SubSample();
-  SubSample(int PMTid, int time){
+  SubSample(std::vector<int> PMTid,std::vector<int> time){
     m_PMTid=PMTid;
     m_time=time;
   }
   
-  int m_PMTid;
-  int m_time;
+  std::vector<int> m_PMTid;
+  std::vector<int> m_time;
   
 };
 
