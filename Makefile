@@ -39,7 +39,7 @@ clean:
 	rm -f include/*.h
 	rm -f lib/*.so
 	rm -f main
-	rm -f UserTools/CUDA/daq_code
+	rm -f UserTools/CUDA/daq_code.o
 
 
 lib/libDataModel.so: lib/libStore.so
@@ -48,10 +48,12 @@ lib/libDataModel.so: lib/libStore.so
 	g++ -c --shared -fPIC DataModel/DataModel.cpp -I include -L lib -lStore -o lib/libDataModel.so $(DataModelInclude) $(DataModelLib)
 
 
-lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so CUDA/daq_code
+lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so UserTools/CUDA/daq_code.o
 
 	cp UserTools/*.h include/
-	g++  --shared -c -fPIC UserTools/Unity.cpp CUDA/daq_code.o -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
+	g++  --shared  -fPIC UserTools/Unity.cpp UserTools/CUDA/daq_code.o -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
 
-CUDA/daq_code: UserTools/CUDA/daq_code.cu Makefile
+UserTools/CUDA/daq_code.o:
+
+	cp UserTools/CUDA/*.h include/
 	nvcc -c --shared -fPIC UserTools/CUDA/daq_code.cu -o UserTools/CUDA/daq_code.o $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
