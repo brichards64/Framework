@@ -1,5 +1,5 @@
 #include "GPUProcessor.h"
-#include "../CUDA/library_daq.h"
+#include "CUDA/library_daq.h"
 
 GPUProcessor::GPUProcessor():Tool(){}
 
@@ -19,13 +19,13 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
   
   std::string PMTFile;
   std::string DetectorFile;
-  std::string ParamiterFile;
+  std::string ParameterFile;
   
   m_variables.Get("PMTFile",PMTFile);
   m_variables.Get("DetectorFile",DetectorFile);
   m_variables.Get("ParameterFile",ParameterFile);
   
-  gpu_daq_initialize(PMTFile,DetectorFile,ParamiterFile);
+  gpu_daq_initialize(PMTFile,DetectorFile,ParameterFile);
 
 
   // can acess variables directly like this and would be good if you could impliment in your code

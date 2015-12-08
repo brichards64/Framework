@@ -9,8 +9,8 @@
 #include <float.h>
 #include <vector>
 #include <sys/time.h>
-#include <CUDA/helper_cuda.h>
-#include <CUDA/library_daq.h>
+#include "helper_cuda.h"
+#include "library_daq.h"
 
 
 #include <stdlib.h>
