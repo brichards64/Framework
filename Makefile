@@ -4,9 +4,13 @@ DataModelLib =
 MyToolsInclude =
 MyToolsLib =
 
-all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so
+INC	:= -I$(CUDA_HOME)/include -I.
+LIB	:= -L$(CUDA_HOME)/lib64 -lcudart
+NVCCFLAGS	:= -lineinfo -arch=sm_20 --ptxas-options=-v --use_fast_math
 
-	g++ src/main.cpp -o main -I include -L lib -lStore  -lToolChain -lDataModel -lSocketCom -lMyTools -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
+all: CUDA/daq_code lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so 
+
+	g++ src/main.cpp -o main CUDA/daq_code.o -I include -L lib -lStore  -lToolChain -lDataModel -lSocketCom -lMyTools -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib) $(INC) $(LIB)
 
 lib/libStore.so:
 
@@ -35,6 +39,7 @@ clean:
 	rm include/*.h
 	rm lib/*.so
 	rm main
+	rm -f CUDA/daq_code
 
 
 lib/libDataModel.so: lib/libStore.so
@@ -48,3 +53,5 @@ lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so
 	cp UserTools/*.h include/
 	g++  --shared -c UserTools/Unity.cpp -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
 
+CUDA/daq_code: CUDA/daq_code.cu Makefile
+	nvcc -c CUDA/daq_code.cu -o CUDA/daq_code.o $(INC) $(NVCCFLAGS) $(LIB)
