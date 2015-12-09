@@ -56,4 +56,4 @@ lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so UserTools/
 UserTools/CUDA/daq_code.o:
 
 	cp UserTools/CUDA/*.h include/
-	nvcc -c --shared -fPIC UserTools/CUDA/daq_code.cu -o UserTools/CUDA/daq_code.o -I include $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
+	nvcc -c --shared -Xcompiler -fPIC UserTools/CUDA/daq_code.cu -o UserTools/CUDA/daq_code.o -I include $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
