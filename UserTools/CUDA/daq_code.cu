@@ -1226,7 +1226,7 @@ void read_user_parameters(std::string parameter_file){
 }
 
 
-int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::string parameter_file){
+int gpu_daq_initialize(std::string the_pmts_file,  std::string the_detector_file, std::string parameter_file){
 
   int argc = 0;
   const char* n_argv[] = {};
@@ -1270,8 +1270,8 @@ int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::s
   // set: n_PMTs, PMT_x, PMT_y, PMT_z
   if( use_timing )
     start_c_clock();
-  detector_file = "detector.txt";
-  pmts_file = "all_pmts.txt";
+  detector_file = the_detector_file;
+  pmts_file = the_pmts_file;
   if( !read_the_pmts() ) return 0;
   if( use_timing )
     elapsed_pmts = stop_c_clock();

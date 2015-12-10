@@ -20,6 +20,7 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
   std::string DetectorFile;
   std::string ParameterFile;
   
+
   m_variables.Get("PMTFile",PMTFile);
   m_variables.Get("DetectorFile",DetectorFile);
   m_variables.Get("ParameterFile",ParameterFile);
