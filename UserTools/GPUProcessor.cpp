@@ -11,7 +11,6 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-
   m_data->triggeroutput=false;
 
 
@@ -26,7 +25,6 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("ParameterFile",ParameterFile);
   
   gpu_daq_initialize(PMTFile,DetectorFile,ParameterFile);
-
 
   // can acess variables directly like this and would be good if you could impliment in your code
 
@@ -57,7 +55,7 @@ bool GPUProcessor::Execute(){
   }
   */
   int the_output;
-  the_output = CUDAFunction(m_data->Samples.at(0).m_PMTid, m_data->Samples.at(0).times);
+  the_output = CUDAFunction(m_data->Samples.at(0).m_PMTid, m_data->Samples.at(0).m_time);
 
   m_data->triggeroutput=(bool)the_output;
 

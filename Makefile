@@ -1,5 +1,5 @@
 CUDAINC = -I$(CUDA_HOME)/include -I.
-CUBALIB = -L$(CUDA_HOME)/lib64 -lcudart
+CUDALIB = -L$(CUDA_HOME)/lib64 -lcudart
 
 NVCCFLAGS	:= -lineinfo -arch=sm_20 --ptxas-options=-v --use_fast_math
 

@@ -1228,8 +1228,9 @@ void read_user_parameters(std::string parameter_file){
 
 int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::string parameter_file){
 
-  int argc;
-  const char **argv;
+  int argc = 0;
+  const char* n_argv[] = {};
+  const char **argv = n_argv;
 
   /////////////////////
   // initialise card //
@@ -1260,6 +1261,7 @@ int gpu_daq_initialize(std::string pmts_file,  std::string detector_file, std::s
   print_gpu_properties();
 
 
+  printf(" ac \n");
 
 
   ////////////////
