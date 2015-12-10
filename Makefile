@@ -10,7 +10,7 @@ MyToolsLib = $(CUDALIB)
 
 all:  lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h lib/libSocketCom.so lib/libDataModel.so 
 
-	g++ src/main.cpp -o main CUDA/daq_code.o -I include -L lib -lStore  -lToolChain -lDataModel -lSocketCom -lMyTools -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
+	g++ src/main.cpp -o main -I include -L lib -lStore  -lToolChain -lDataModel -lSocketCom -lMyTools -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib)
 
 lib/libStore.so:
 
