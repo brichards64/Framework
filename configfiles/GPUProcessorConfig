@@ -1,0 +1,21 @@
+# GPU Processor config file
+#
+# Paths to files
+#
+PMTFile inputfiles/all_pmts.txt
+DetectorFile inputfiles/detector.txt
+ParameterFile inputfiles/parameters.txt
+#
+#
+# Can also store variables directly like this
+# 
+# Parameters
+#
+dark_rate 8400.
+distance_between_vertices 500.
+wall_like_distance 2.
+water_like_threshold_number_of_pmts 46
+wall_like_threshold_number_of_pmts 100
+coalesce_time 500.
+trigger_gate_up 950.0
+trigger_gate_down -400.0
