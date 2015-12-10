@@ -1261,8 +1261,6 @@ int gpu_daq_initialize(std::string the_pmts_file,  std::string the_detector_file
   print_gpu_properties();
 
 
-  printf(" ac \n");
-
 
   ////////////////
   // read PMTs  //
