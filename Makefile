@@ -4,7 +4,7 @@ DataModelLib =
 MyToolsInclude =
 MyToolsLib =
 
-all: lib/libToolChain.so lib/libMyTools.so lib/libStore.so include/Tool.h  lib/libDataModel.so
+all: lib/libMyTools.so lib/libToolChain.so lib/libStore.so include/Tool.h  lib/libDataModel.so
 
 	g++ src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude) $(MyToolsLib) -L /usr/lib64 -lzmq
 
@@ -19,17 +19,17 @@ include/Tool.h:
 	cp src/Tool/Tool.h include/
 
 
-lib/libToolChain.so: lib/libStore.so include/Tool.h lib/libDataModel.so
+lib/libToolChain.so: lib/libStore.so include/Tool.h lib/libDataModel.so lib/libMyTools.so
 
-	cp src/ToolChain/ToolChain.h include/
+	cp src/ToolChain/*.h include/
 	cp src/NodeDeamon/cppzmq/zmq.hpp include/
-	g++ -c --shared src/ToolChain/ToolChain.cpp -I include -lpthread -L /lib -lStore -lDataModel -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) -L /usr/lib64 -lzmq
+	g++ -c --shared src/ToolChain/ToolChain.cpp -I include -lpthread -L /lib -lStore -lDataModel -lMyTools -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) -L /usr/lib64 -lzmq
 
 
 clean: 
-	rm include/*.h
-	rm lib/*.so
-	rm main
+	rm -f include/*.h
+	rm -f lib/*.so
+	rm -f main
 
 lib/libDataModel.so: lib/libStore.so
 
@@ -40,5 +40,6 @@ lib/libDataModel.so: lib/libStore.so
 lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so
 
 	cp UserTools/*.h include/
-	g++  --shared -c UserTools/Unity.cpp -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
+	cp UserTools/Factory/*.h include/
+	g++  --shared -c UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib)
 
