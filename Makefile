@@ -1,5 +1,6 @@
+CUDA_HOME=/usr/local/cuda-7.5/targets/x86_64-linux
 CUDAINC = -I$(CUDA_HOME)/include -I.
-CUDALIB = -L$(CUDA_HOME)/lib64 -lcudart
+CUDALIB = -L$(CUDA_HOME)/lib -lcudart
 
 NVCCFLAGS	:= -lineinfo -arch=sm_20 --ptxas-options=-v --use_fast_math
 
